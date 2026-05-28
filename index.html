@@ -1,0 +1,2392 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Competitor Analysis Assistant | AI Market Insights</title>
+  
+  <!-- Typography & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+      /* Colors - Light Mode */
+      --bg-base: #f8fafc;
+      --bg-card: rgba(255, 255, 255, 0.75);
+      --bg-sidebar: #ffffff;
+      --bg-input: #ffffff;
+      --border-color: rgba(226, 232, 240, 0.8);
+      --border-focus: rgba(99, 102, 241, 0.5);
+
+      --text-main: #334155;
+      --text-heading: #0f172a;
+      --text-muted: #64748b;
+
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-rgb: 99, 102, 241;
+      --primary-light: rgba(99, 102, 241, 0.08);
+
+      --accent: #d946ef;
+      --accent-rgb: 217, 70, 239;
+      --accent-light: rgba(217, 70, 239, 0.08);
+
+      --success: #10b981;
+      --success-light: rgba(16, 185, 129, 0.1);
+      --warning: #f59e0b;
+      --warning-light: rgba(245, 158, 11, 0.1);
+      --danger: #ef4444;
+      --danger-light: rgba(239, 68, 68, 0.1);
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.08);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+      --shadow-glow: 0 0 25px rgba(99, 102, 241, 0.15);
+
+      --glass-blur: blur(16px);
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+    }
+
+    [data-theme="dark"] {
+      /* Colors - Dark Mode */
+      --bg-base: #070913;
+      --bg-card: rgba(15, 23, 42, 0.65);
+      --bg-sidebar: #0b0f19;
+      --bg-input: #111827;
+      --border-color: rgba(255, 255, 255, 0.07);
+      --border-focus: rgba(129, 140, 248, 0.5);
+
+      --text-main: #94a3b8;
+      --text-heading: #f8fafc;
+      --text-muted: #64748b;
+
+      --primary: #818cf8;
+      --primary-hover: #6366f1;
+      --primary-rgb: 129, 140, 248;
+      --primary-light: rgba(129, 140, 248, 0.1);
+
+      --accent: #f472b6;
+      --accent-rgb: 244, 114, 182;
+      --accent-light: rgba(244, 114, 182, 0.1);
+
+      --success: #34d399;
+      --success-light: rgba(52, 211, 153, 0.12);
+      --warning: #fbbf24;
+      --warning-light: rgba(251, 191, 36, 0.12);
+      --danger: #f87171;
+      --danger-light: rgba(248, 113, 113, 0.12);
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+      --shadow-glow: 0 0 25px rgba(129, 140, 248, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--sans);
+      color: var(--text-main);
+      background: var(--bg-base);
+      min-height: 100vh;
+      display: flex;
+      overflow: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-muted);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      padding: 1.5rem 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .logo-container {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+    }
+
+    .logo-text h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-heading);
+    }
+
+    .logo-text span {
+      font-size: 0.725rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      display: block;
+    }
+
+    .sidebar-nav {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      flex-grow: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      color: var(--text-main);
+      font-weight: 500;
+      font-size: 0.9rem;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      transform: translateX(3px);
+    }
+
+    .nav-item.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-left: 3px solid var(--primary);
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      font-weight: 600;
+    }
+
+    .sidebar-footer {
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .theme-toggle-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.6rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-main);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--border-color);
+      color: var(--text-heading);
+    }
+
+
+    /* Main Content */
+    .main-content {
+      flex-grow: 1;
+      padding: 2rem 2.5rem;
+      height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .page-title h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+      color: var(--text-heading);
+    }
+
+    .page-title p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* Card Layouts */
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-md);
+      transition: all 0.3s ease;
+    }
+
+    .glass-card:hover {
+      box-shadow: var(--shadow-lg);
+      border-color: var(--border-focus);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+    }
+
+    /* Tabs & Views */
+    .view-panel {
+      display: none;
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    .view-panel.active {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Forms */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-heading);
+    }
+
+    .form-input, .form-select, .form-textarea {
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-input);
+      color: var(--text-heading);
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.65rem 1rem;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-heading);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border-color);
+    }
+
+    .btn-danger {
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+
+    .btn-danger:hover {
+      background: var(--danger);
+      color: white;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      border-radius: 9999px;
+    }
+    .badge-primary { background: var(--primary-light); color: var(--primary); }
+    .badge-success { background: var(--success-light); color: var(--success); }
+    .badge-warning { background: var(--warning-light); color: var(--warning); }
+    .badge-danger { background: var(--danger-light); color: var(--danger); }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      width: 100%;
+    }
+    .custom-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .custom-table th {
+      padding: 0.85rem;
+      border-bottom: 2px solid var(--border-color);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+    .custom-table td {
+      padding: 1rem 0.85rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-main);
+      font-size: 0.85rem;
+    }
+    .custom-table tr:hover td {
+      background: rgba(99, 102, 241, 0.02);
+    }
+
+    /* Micro animations */
+    .animate-pulse {
+      animation: pulse 2s infinite ease-in-out;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .animate-spin {
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Draggable Bubble styles */
+    .draggable-bubble {
+      touch-action: none;
+      user-select: none;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .draggable-bubble.dragging {
+      transform: scale(1.2) !important;
+      cursor: grabbing !important;
+      box-shadow: 0 0 20px var(--primary) !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-container">
+        <i data-lucide="activity" style="width: 20px; height: 20px;"></i>
+      </div>
+      <div class="logo-text">
+        <h1>CompIntel</h1>
+        <span>Market Intelligence v1.2</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" onclick="switchTab('dashboard', this)">
+        <i data-lucide="layout-dashboard" style="width: 16px; height: 16px;"></i>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('database', this)">
+        <i data-lucide="database" style="width: 16px; height: 16px;"></i>
+        <span>Competitor DB</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('strategy', this)">
+        <i data-lucide="target" style="width: 16px; height: 16px;"></i>
+        <span>Strategy Mapping</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('comparison', this)">
+        <i data-lucide="layers" style="width: 16px; height: 16px;"></i>
+        <span>Comparison Grid</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('trends', this)">
+        <i data-lucide="trending-up" style="width: 16px; height: 16px;"></i>
+        <span>Market Trends</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('ai-chat', this)">
+        <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i>
+        <span>AI SWOT & Chat</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('alerts', this)" style="position: relative;" id="nav-btn-alerts">
+        <i data-lucide="bell" style="width: 16px; height: 16px;"></i>
+        <span>Threat Monitor</span>
+        <span id="alerts-badge" style="display: none; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: var(--danger); color: white; font-size: 0.65rem; font-weight: 700; padding: 1px 5px; border-radius: 999px; line-height: 1;">0</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('integrations', this)">
+        <i data-lucide="settings" style="width: 16px; height: 16px;"></i>
+        <span>Integrations</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button onclick="toggleTheme()" class="theme-toggle-btn" id="theme-toggle">
+        <i data-lucide="sun" style="width: 14px; height: 14px; color: var(--warning);"></i>
+        <span>Light Mode</span>
+      </button>
+
+    </div>
+  </aside>
+
+  <!-- Main Work viewport -->
+  <main class="main-content">
+    
+    <header class="page-header">
+      <div class="page-title">
+        <h2 id="page-title-text">Executive Dashboard</h2>
+        <p id="page-subtitle-text">Real-time market tracking and competitor status logs.</p>
+      </div>
+    </header>
+
+    <!-- VIEWS VIEWPORT -->
+    
+    <!-- 1. DASHBOARD VIEW -->
+    <div id="view-dashboard" class="view-panel active">
+      <div class="dashboard-grid">
+        <div class="glass-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Tracked Entities</span>
+            <div style="padding: 0.35rem; border-radius: 6px; background: var(--primary-light); color: var(--primary);">
+              <i data-lucide="layers" style="width: 16px; height: 16px;"></i>
+            </div>
+          </div>
+          <h3 id="stat-count" style="font-size: 1.8rem; font-weight: 700; margin: 0;">3</h3>
+          <span style="font-size: 0.7rem; color: var(--success); display: flex; align-items: center; gap: 0.25rem; margin-top: 0.4rem;">
+            <i data-lucide="trending-up" style="width: 10px; height: 10px;"></i> Scrapers active
+          </span>
+        </div>
+
+        <div class="glass-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Avg SEO Ranking</span>
+            <div style="padding: 0.35rem; border-radius: 6px; background: var(--accent-light); color: var(--accent);">
+              <i data-lucide="globe" style="width: 16px; height: 16px;"></i>
+            </div>
+          </div>
+          <h3 id="stat-seo" style="font-size: 1.8rem; font-weight: 700; margin: 0;">86%</h3>
+          <span style="font-size: 0.7rem; color: var(--success); display: flex; align-items: center; gap: 0.25rem; margin-top: 0.4rem;">
+            <i data-lucide="trending-up" style="width: 10px; height: 10px;"></i> +1.2% this week
+          </span>
+        </div>
+
+        <div class="glass-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Avg Performance</span>
+            <div style="padding: 0.35rem; border-radius: 6px; background: var(--success-light); color: var(--success);">
+              <i data-lucide="activity" style="width: 16px; height: 16px;"></i>
+            </div>
+          </div>
+          <h3 id="stat-speed" style="font-size: 1.8rem; font-weight: 700; margin: 0;">88ms</h3>
+          <span style="font-size: 0.7rem; color: var(--success); display: flex; align-items: center; gap: 0.25rem; margin-top: 0.4rem;">
+            <i data-lucide="check-circle" style="width: 10px; height: 10px;"></i> Latency healthy
+          </span>
+        </div>
+
+        <div class="glass-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">High-Risk Actions</span>
+            <div style="padding: 0.35rem; border-radius: 6px; background: var(--danger-light); color: var(--danger);">
+              <i data-lucide="alert-triangle" style="width: 16px; height: 16px;"></i>
+            </div>
+          </div>
+          <h3 style="font-size: 1.8rem; font-weight: 700; margin: 0;">2</h3>
+          <span style="font-size: 0.7rem; color: var(--danger); display: flex; align-items: center; gap: 0.25rem; margin-top: 0.4rem;">
+            <i data-lucide="alert-circle" style="width: 10px; height: 10px;"></i> Action suggested
+          </span>
+        </div>
+      </div>
+
+      <!-- Split Layout -->
+      <div style="display: grid; grid-template-columns: 3fr 2fr; gap: 1.5rem;">
+        
+        <!-- Active Profiles Cards list -->
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <h3 style="font-size: 1.15rem; font-weight: 600; margin: 0;">Monitored Landscapes</h3>
+          <div id="dashboard-profiles-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Intel Feed -->
+        <div class="glass-card" style="display: flex; flex-direction: column; height: 100%;">
+          <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i data-lucide="activity" class="animate-pulse" style="color: var(--primary); width: 18px; height: 18px;"></i>
+            Live Competitor Intel
+          </h3>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem; overflow-y: auto; max-height: 300px;" id="intel-feed">
+            <!-- News Feed populated by script -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Foot CTAs -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <div class="glass-card" style="background: linear-gradient(135deg, var(--primary-light) 0%, rgba(217, 70, 239, 0.04) 100%); display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.35rem;">Track a competitor</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem; max-width: 320px;">
+              Input target business URLs to automatically build feature tables and mock SWOT analyses.
+            </p>
+            <button class="btn btn-primary" onclick="triggerNav('database')">Add Profile</button>
+          </div>
+          <i data-lucide="plus-circle" style="width: 54px; height: 54px; opacity: 0.08; color: var(--primary);"></i>
+        </div>
+
+        <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.35rem;">Push strategy reports</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem; max-width: 320px;">
+              Direct synchronization of database columns to shared corporate Notion and Google Sheet pipelines.
+            </p>
+            <button class="btn btn-secondary" onclick="triggerNav('integrations')">Configure Syncs</button>
+          </div>
+          <i data-lucide="database" style="width: 54px; height: 54px; opacity: 0.08; color: var(--accent);"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. DATABASE VIEW -->
+    <div id="view-database" class="view-panel">
+      <div style="display: grid; grid-template-columns: 1.1fr 1.9fr; gap: 1.5rem;">
+        
+        <!-- Input Form -->
+        <div class="glass-card" style="height: fit-content;">
+          <h3 style="font-size: 1.15rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i data-lucide="plus" style="color: var(--primary); width: 18px; height: 18px;"></i> Add Business Profile
+          </h3>
+
+          <div style="margin-bottom: 1.25rem;">
+            <span style="font-size: 0.7rem; color: var(--text-muted); display: block; margin-bottom: 0.4rem; font-weight: 600;">DEMO PREFILLS</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+              <button onclick="prefillForm('Slack', 'slack.com', 'SaaS / Collaboration', 'Digital team workspaces integration platform.')" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: 12px;">+ Slack</button>
+              <button onclick="prefillForm('Shopify', 'shopify.com', 'E-commerce', 'Omnichannel merchant commerce infrastructure.')" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: 12px;">+ Shopify</button>
+              <button onclick="prefillForm('OpenAI', 'openai.com', 'AI / Technology', 'Autonomous language intelligence API and custom chat integrations.')" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: 12px;">+ OpenAI</button>
+            </div>
+          </div>
+
+          <form id="competitor-form" onsubmit="addCompetitor(event)">
+            <div class="form-group">
+              <label for="c-name">Company Name</label>
+              <input type="text" id="c-name" class="form-input" placeholder="e.g. Shopify" required>
+            </div>
+            <div class="form-group">
+              <label for="c-domain">Domain URL</label>
+              <input type="text" id="c-domain" class="form-input" placeholder="e.g. shopify.com" required>
+            </div>
+            <div class="form-group">
+              <label for="c-industry">Sector Focus</label>
+              <select id="c-industry" class="form-select">
+                <option value="Fintech / Payments">Fintech / Payments</option>
+                <option value="SaaS / Collaboration">SaaS / Collaboration</option>
+                <option value="E-commerce">E-commerce</option>
+                <option value="AI / Technology">AI / Technology</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+              <label for="c-desc">Value Proposition Summary</label>
+              <textarea id="c-desc" class="form-textarea" rows="3" placeholder="Core services, user segmentation, and business focus..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Insert and Scrape Metrics</button>
+          </form>
+        </div>
+
+        <!-- Scrollable list -->
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <h3 style="font-size: 1.15rem; margin: 0;">Database Records</h3>
+          <div id="db-list-container" style="display: flex; flex-direction: column; gap: 1rem; overflow-y: auto; max-height: 480px; padding-right: 0.25rem;">
+            <!-- Populate by JS -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 3. STRATEGY MAP VIEW -->
+    <div id="view-strategy" class="view-panel">
+      <div style="display: grid; grid-template-columns: 1.6fr 1.4fr; gap: 1.5rem;">
+        
+        <!-- Plotting quadrant -->
+        <div class="glass-card" style="display: flex; flex-direction: column;">
+          <h3 style="font-size: 1.15rem; margin-bottom: 0.25rem;">Market Positioning Map</h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.25rem;">Innovation Level vs. Market scale mapping. Drag bubbles to customize positions.</p>
+          
+          <div style="position: relative; width: 100%; height: 420px; border: 2px solid var(--border-color); border-radius: 12px; background: var(--bg-base); overflow: hidden; touch-action: none;" id="quadrant-map">
+            <!-- Labels -->
+            <div style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%) rotate(-90deg); font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">INNOVATION LEVEL &rarr;</div>
+            <div style="position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">MARKET PRESENCE &rarr;</div>
+            
+            <!-- Dashed dividing lines -->
+            <div style="position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px dashed var(--border-color);"></div>
+            <div style="position: absolute; top: 50%; left: 0; right: 0; border-top: 1px dashed var(--border-color);"></div>
+            
+            <div style="position: absolute; top: 10px; right: 10px; font-size: 0.6rem; color: var(--text-muted); font-weight: 600; background: rgba(99,102,241,0.05); padding: 2px 6px; border-radius: 4px;">MARKET LEADERS</div>
+            <div style="position: absolute; top: 10px; left: 10px; font-size: 0.6rem; color: var(--text-muted); font-weight: 600; background: rgba(217,70,239,0.05); padding: 2px 6px; border-radius: 4px;">VISIONARIES</div>
+            <div style="position: absolute; bottom: 10px; right: 10px; font-size: 0.6rem; color: var(--text-muted); font-weight: 600; background: rgba(16,185,129,0.05); padding: 2px 6px; border-radius: 4px;">NICHE / CHALLENGERS</div>
+            <div style="position: absolute; bottom: 10px; left: 10px; font-size: 0.6rem; color: var(--text-muted); font-weight: 600; background: var(--border-color); padding: 2px 6px; border-radius: 4px;">CONTENDERS</div>
+
+            <!-- Nodes injected dynamically -->
+            <div id="quadrant-nodes-container"></div>
+          </div>
+
+          <div id="strategy-comp-chips" style="display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap;">
+            <!-- Populated chips -->
+          </div>
+        </div>
+
+        <!-- Strategy Details panel -->
+        <div class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between;" id="strategy-details-card">
+          <!-- Populated by JS -->
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 4. COMPARISON MATRIX VIEW -->
+    <div id="view-comparison" class="view-panel">
+      <div class="glass-card" style="margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.25rem;">Feature Capability Matrix</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.25rem;">Capability checklists cross-referenced with checked competitor profiles.</p>
+
+        <div class="table-container">
+          <table class="custom-table" id="comparison-table">
+            <!-- Populated by JS -->
+          </table>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.25rem;">Digital Performance Scorecard</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.25rem;">Benchmarking page performance, SEO signals, and community volumes.</p>
+
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;" id="performance-scorecard-list">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. TRENDS VIEW -->
+    <div id="view-trends" class="view-panel">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        
+        <!-- Sentiment Breakdown card -->
+        <div class="glass-card">
+          <h3 style="font-size: 1.15rem; margin-bottom: 0.25rem;">Customer Sentiment Ratio</h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.5rem;">Forums scrape and developer sentiment positive/neutral/negative balances.</p>
+          
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;" id="trends-sentiment-list">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Sparkline search trends -->
+        <div class="glass-card">
+          <h3 style="font-size: 1.15rem; margin-bottom: 0.25rem;">30-Day Search Query Index</h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.5rem;">Trend query charts and sparklines representing customer volume changes.</p>
+          
+          <div style="display: flex; flex-direction: column; gap: 1rem;" id="trends-sparkline-list">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Customer Reviews Word Cloud -->
+      <div class="glass-card" style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h3 style="font-size: 1.15rem; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i data-lucide="message-square" style="color: var(--primary); width: 20px; height: 20px;"></i>
+              Customer Reviews Word Cloud
+            </h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              Most frequent review keywords. Click tags to read representative customer quotes.
+            </p>
+          </div>
+          <div>
+            <select 
+              id="wordcloud-comp-selector" 
+              class="form-select" 
+              onchange="changeWordCloudComp(this.value)"
+              style="padding: 0.5rem 1.5rem 0.5rem 0.75rem; font-size: 0.85rem;"
+            >
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Word Cloud Container -->
+        <div id="word-cloud-container" style="
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.85rem;
+          justify-content: center;
+          align-items: center;
+          background: var(--bg-base);
+          padding: 2rem;
+          border-radius: 12px;
+          border: 1px solid var(--border-color);
+          min-height: 120px;
+        ">
+          <!-- Injected dynamically -->
+        </div>
+
+        <!-- Quote Overlay Block -->
+        <div id="word-cloud-quote-overlay" style="display: none; margin-top: 1.5rem; padding: 1.25rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); transition: all 0.3s ease;">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <!-- Opportunities -->
+      <div>
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+          <i data-lucide="sparkles" style="color: var(--accent); width: 18px; height: 18px;"></i>
+          Emerging Strategic Opportunities
+        </h3>
+        
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem;">
+          <div class="glass-card" style="border-left: 4px solid var(--accent); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <span class="badge badge-danger" style="font-size: 0.6rem;">HIGH URGENCY</span>
+                <span style="font-size: 0.65rem; color: var(--text-muted);">Complexity: <strong>Medium</strong></span>
+              </div>
+              <h4 style="font-size: 0.9rem; margin-bottom: 0.35rem;">Alternative Payment Methods</h4>
+              <p style="font-size: 0.75rem; color: var(--text-main); line-height: 1.4;">
+                Competitors are slow to update regional integrations (like Pix in Brazil and UPI in India). Developing native modules for these channels could attract localized start-up markets.
+              </p>
+            </div>
+            <span style="margin-top: 1rem; font-size: 0.75rem; color: var(--primary); display: flex; align-items: center; gap: 0.25rem; font-weight: 600; cursor: pointer;">
+              Track Opportunity &rarr;
+            </span>
+          </div>
+
+          <div class="glass-card" style="border-left: 4px solid var(--primary); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <span class="badge badge-warning" style="font-size: 0.6rem;">MEDIUM URGENCY</span>
+                <span style="font-size: 0.65rem; color: var(--text-muted);">Complexity: <strong>Low</strong></span>
+              </div>
+              <h4 style="font-size: 0.9rem; margin-bottom: 0.35rem;">Developer API Wrappers</h4>
+              <p style="font-size: 0.75rem; color: var(--text-main); line-height: 1.4;">
+                While Stripe has exceptional docs, their direct integrations can be overwhelming for smaller developer teams who prefer zero-configuration SDKs. Developing no-code wrappers offers an immediate market entry.
+              </p>
+            </div>
+            <span style="margin-top: 1rem; font-size: 0.75rem; color: var(--primary); display: flex; align-items: center; gap: 0.25rem; font-weight: 600; cursor: pointer;">
+              Track Opportunity &rarr;
+            </span>
+          </div>
+
+          <div class="glass-card" style="border-left: 4px solid var(--accent); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <span class="badge badge-danger" style="font-size: 0.6rem;">HIGH URGENCY</span>
+                <span style="font-size: 0.65rem; color: var(--text-muted);">Complexity: <strong>Hard</strong></span>
+              </div>
+              <h4 style="font-size: 0.9rem; margin-bottom: 0.35rem;">Real-time Stablecoin Sync</h4>
+              <p style="font-size: 0.75rem; color: var(--text-main); line-height: 1.4;">
+                Competitor analysis indicates Stripe is experimenting with USDC but does not support direct smart-contract settlement pools. Adding direct multichain support positions us as a Web3 native leader.
+              </p>
+            </div>
+            <span style="margin-top: 1rem; font-size: 0.75rem; color: var(--primary); display: flex; align-items: center; gap: 0.25rem; font-weight: 600; cursor: pointer;">
+              Track Opportunity &rarr;
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. AI SWOT VIEW -->
+    <div id="view-ai-chat" class="view-panel">
+      <div style="display: grid; grid-template-columns: 1.3fr 1.7fr; gap: 1.5rem; height: calc(100vh - 12rem);">
+        
+        <!-- Chat Simulator -->
+        <div class="glass-card" style="display: flex; flex-direction: column; height: 100%;">
+          <h3 style="font-size: 1.1rem; margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i data-lucide="sparkles" style="color: var(--primary); width: 18px; height: 18px;"></i>
+            Strategic AI Chatbot
+          </h3>
+          <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1rem;">Ask strategic questions regarding pricing advantages, weaknesses, or market trend targets.</p>
+
+          <!-- Chat history container -->
+          <div id="chat-history" style="flex-grow: 1; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; background: var(--bg-base); display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <div style="align-self: flex-start; max-width: 85%; background: var(--bg-card); border: 1px solid var(--border-color); padding: 0.6rem 0.85rem; border-radius: 12px; border-top-left-radius: 2px; font-size: 0.8rem; line-height: 1.4;">
+              Hello! I am your AI Market Intelligence Assistant. Ask me anything about your competitors, market positioning, or strategic opportunities.
+            </div>
+          </div>
+
+          <!-- Question chips helper -->
+          <div style="display: flex; gap: 0.4rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+            <button onclick="sendChatMessage('How can we beat Stripe on pricing?')" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.75rem; border-radius: 12px;">How to beat Stripe pricing?</button>
+            <button onclick="sendChatMessage('What is Adyens primary weakness?')" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.75rem; border-radius: 12px;">What is Adyen's weakness?</button>
+            <button onclick="sendChatMessage('What are the future market opportunities?')" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.75rem; border-radius: 12px;">Future opportunities?</button>
+          </div>
+
+          <!-- Input bar -->
+          <form onsubmit="handleChatSubmit(event)" style="display: flex; gap: 0.5rem;">
+            <input type="text" id="chat-input" class="form-input" placeholder="Type query about pricing models, gaps, or SWOT..." style="flex-grow: 1;">
+            <button type="submit" class="btn btn-primary" style="padding: 0.65rem;"><i data-lucide="send" style="width: 14px; height: 14px;"></i></button>
+          </form>
+        </div>
+
+        <!-- SWOT Panel -->
+        <div class="glass-card" style="display: flex; flex-direction: column; height: 100%;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="font-size: 1.1rem; margin: 0;">Strategic SWOT matrix</h3>
+            <select id="swot-selector" class="form-select" onchange="loadSwot(this.value)" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; width: 140px;">
+              <!-- populate by JS -->
+            </select>
+          </div>
+
+          <div style="display: grid; grid-template-rows: 1fr 1fr; grid-template-columns: 1fr 1fr; gap: 0.85rem; flex-grow: 1; overflow-y: auto;" id="swot-matrix-container">
+            <!-- dynamically populated by loadSwot() -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 7. INTEGRATIONS VIEW -->
+    <div id="view-integrations" class="view-panel">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        
+        <!-- Google Sheets -->
+        <div class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 280px;">
+          <div>
+            <h3 style="font-size: 1.15rem; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i data-lucide="file-spreadsheet" style="color: var(--success); width: 20px; height: 20px;"></i>
+              Google Sheets Integration
+            </h3>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1rem;">Export database entries directly to structured spreadsheet cells for reporting.</p>
+            
+            <div class="form-group">
+              <label for="i-sheet-id">Spreadsheet ID Reference</label>
+              <input type="text" id="i-sheet-id" class="form-input" value="1competitor-analysis-sheet-2026">
+            </div>
+
+            <div id="sheet-sync-logs" style="display: none; background: var(--bg-base); font-family: var(--mono); font-size: 0.65rem; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--border-color); max-height: 80px; overflow-y: auto; flex-direction: column; gap: 0.2rem; margin-top: 0.5rem;">
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 1rem; margin-top: 1rem;">
+            <span id="sheet-sync-status" style="font-size: 0.75rem; color: var(--text-muted);">Ready to connect</span>
+            <button class="btn btn-primary" onclick="triggerSync('sheet')" id="sheet-sync-btn" style="min-width: 120px;">
+              <i data-lucide="refresh-cw" style="width: 12px; height: 12px;"></i> Sync Sheets
+            </button>
+          </div>
+        </div>
+
+        <!-- Notion -->
+        <div class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 280px;">
+          <div>
+            <h3 style="font-size: 1.15rem; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i data-lucide="database" style="color: var(--primary); width: 20px; height: 20px;"></i>
+              Notion Workspace Sync
+            </h3>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1rem;">Connect details and SWOT metrics cards directly to active Notion databases.</p>
+            
+            <div class="form-group">
+              <label for="i-notion-id">Database Reference ID</label>
+              <input type="text" id="i-notion-id" class="form-input" value="https://notion.so/workspace/Competitor-Analysis-b59a">
+            </div>
+
+            <div id="notion-sync-logs" style="display: none; background: var(--bg-base); font-family: var(--mono); font-size: 0.65rem; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--border-color); max-height: 80px; overflow-y: auto; flex-direction: column; gap: 0.2rem; margin-top: 0.5rem;">
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 1rem; margin-top: 1rem;">
+            <span id="notion-sync-status" style="font-size: 0.75rem; color: var(--text-muted);">Ready to connect</span>
+            <button class="btn btn-primary" onclick="triggerSync('notion')" id="notion-sync-btn" style="min-width: 120px;">
+              <i data-lucide="refresh-cw" style="width: 12px; height: 12px;"></i> Sync Notion
+            </button>
+          </div>
+        </div>
+
+        <!-- API Key settings -->
+        <div class="glass-card" style="grid-column: span 2;">
+          <h3 style="font-size: 1.1rem; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i data-lucide="lock" style="color: var(--accent); width: 18px; height: 18px;"></i>
+            AI Model Engine (ChatGPT Integration)
+          </h3>
+          <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1.25rem;">Insert custom OpenAI API credentials to unlock real-time live page scrapes.</p>
+
+          <div style="display: grid; grid-template-columns: 2.2fr 0.8fr; gap: 1rem;">
+            <div class="form-group">
+              <label for="gpt-key">OpenAI API Key</label>
+              <input type="password" id="gpt-key" class="form-input" placeholder="sk-proj-................................" oninput="updateGptStatus(this.value)">
+            </div>
+            <div class="form-group">
+              <label for="gpt-model">Target Model</label>
+              <select id="gpt-model" class="form-select">
+                <option value="gpt-4o">GPT-4o (Standard)</option>
+                <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                <option value="o1-mini">o1 Mini Reasoning</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-top: 1rem; background: var(--bg-base); padding: 0.5rem 0.85rem; border-radius: 6px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; font-size: 0.75rem;">
+            <span id="gpt-status-text">Status: <strong>Simulated AI active - ready to run</strong></span>
+            <span style="color: var(--text-muted);">No key details are saved to external cloud servers.</span>
+          </div>
+        </div>
+
+    </div>
+
+    <!-- 8. THREAT MONITOR VIEW -->
+    <div id="view-alerts" class="view-panel">
+      <!-- Alert Header Stats -->
+      <div style="display: grid; grid-template-columns: 1.5fr 1.5fr 1fr; gap: 1.5rem; width: 100%;">
+        <div class="glass-card" style="display: flex; align-items: center; gap: 1rem;">
+          <div style="padding: 0.75rem; border-radius: 12px; background: var(--danger-light); color: var(--danger);">
+            <i data-lucide="bell" id="bell-stat-icon" style="width: 24px; height: 24px;"></i>
+          </div>
+          <div>
+            <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; display: block; text-transform: uppercase;">Active Alert Incidents</span>
+            <h3 id="high-severity-alerts-count" style="font-size: 1.6rem; margin: 0;">0</h3>
+          </div>
+        </div>
+
+        <div class="glass-card" style="display: flex; align-items: center; gap: 1rem;">
+          <div style="padding: 0.75rem; border-radius: 12px; background: var(--primary-light); color: var(--primary);">
+            <i data-lucide="settings" style="width: 24px; height: 24px;"></i>
+          </div>
+          <div>
+            <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; display: block; text-transform: uppercase;">Active Scraper Rules</span>
+            <h3 id="active-scraper-rules-count" style="font-size: 1.6rem; margin: 0;">0</h3>
+          </div>
+        </div>
+
+        <div class="glass-card" style="display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
+          <button class="btn btn-danger" onclick="clearAlerts()" style="width: 100%; font-size: 0.8rem; padding: 0.5rem 1rem;">
+            <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Clear Log Feed
+          </button>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1.2fr 1.8fr; gap: 2rem; margin-top: 1.5rem; width: 100%;">
+        
+        <!-- Settings & Simulator -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Rules List -->
+          <div class="glass-card">
+            <h3 style="font-size: 1.15rem; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i data-lucide="settings" style="color: var(--primary); width: 18px; height: 18px;"></i>
+              Scraper Rules Configuration
+            </h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+              Enable or disable autonomous background triggers for web metric alerts.
+            </p>
+
+            <div id="scraper-rules-container" style="display: flex; flex-direction: column; gap: 0.85rem;">
+              <!-- Injected by JS -->
+            </div>
+          </div>
+
+          <!-- Simulator Console -->
+          <div class="glass-card" style="border-left: 4px solid var(--accent);">
+            <h3 style="font-size: 1.15rem; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i data-lucide="play" style="color: var(--accent); width: 18px; height: 18px;"></i>
+              Incident Trigger Simulator
+            </h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+              Force-simulate competitor actions to test threat notification pipelines.
+            </p>
+
+            <div class="form-group">
+              <label for="simulator-comp-select">Target Competitor</label>
+              <select id="simulator-comp-select" class="form-select">
+                <!-- Injected dynamically -->
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+              <label for="simulator-scenario-select">Threat Event Scenario</label>
+              <select id="simulator-scenario-select" class="form-select">
+                <option value="pricing">Pricing Policy Shift (High Severity)</option>
+                <option value="downtime">API Downtime Event (High Severity)</option>
+                <option value="seo">SEO Meta tag Drop (Warning Severity)</option>
+                <option value="dns">Domain DNS Record Refresh (Info Severity)</option>
+              </select>
+            </div>
+
+            <button class="btn btn-primary" onclick="fireSimulatedThreat()" style="width: 100%;">
+              Fire Simulated Threat Event
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Live Logs Console -->
+        <div class="glass-card" style="display: flex; flex-direction: column; height: 100%; min-height: 450px;">
+          <h3 style="font-size: 1.15rem; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i data-lucide="bell" style="color: var(--danger); width: 18px; height: 18px;"></i>
+            Real-time Threat Intelligence Feed
+          </h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+            Historical record of triggered notifications and scraper incidents.
+          </p>
+
+          <div id="threat-feed-container" style="display: flex; flex-direction: column; gap: 1rem; overflow-y: auto; flex-grow: 1; max-height: 400px; padding-right: 0.25rem;">
+            <!-- Injected dynamically -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- BUSINESS INTEL LOGIC -->
+  <script>
+    // Initial Preloaded Data
+    let competitors = [
+      {
+        id: "stripe",
+        name: "Stripe",
+        domain: "stripe.com",
+        industry: "Fintech / Payments",
+        description: "Financial infrastructure platform for the internet, offering developer-friendly billing, checkout, and card issuing APIs.",
+        strategy: "Developer-first onboarding, robust API suite, rapid product expansion (Atlas, Corporate Card), and integration ecosystem.",
+        positioning: { x: 88, y: 92 },
+        pricing: { free: "No monthly fees", pro: "2.9% + 30¢ per txn", enterprise: "Custom Interchange splits" },
+        features: { api: true, sso: true, analytics: true, mobile: true, support247: true },
+        metrics: { speed: 94, seo: 92, social: 85 },
+        sentiment: { positive: 80, neutral: 14, negative: 6 },
+        swot: {
+          strengths: ["Unrivaled developer mindshare and premium API docs", "Very fast setup and onboarding for global merchant accounts", "Broad product suite (Payments, Billing, Tax, Radar, Atlas)"],
+          weaknesses: ["Higher transactional costs compared to direct acquirers", "Support can be slow and automated for smaller merchants", "Frequent merchant accounts hold-ups without prior warning"],
+          opportunities: ["Further expansion into stablecoins and Web3 settlement rails", "Growing micro-transaction billing support", "Expanding Stripe Capital lending to global SMBs"],
+          threats: ["High pressure from Adyen on enterprise pricing", "Regulatory scrutiny regarding fraud prevention policies", "Local payments competitors in Asia and Latin America"]
+        },
+        reviewKeywords: [
+          { word: "Developer-first", count: 54, sentiment: "positive", quote: "Stripe's developer onboarding and API sandbox is exceptionally smooth compared to legacy banks." },
+          { word: "Radar Fraud", count: 32, sentiment: "positive", quote: "Radar blocked multiple card-testing attacks automatically during our holiday rush." },
+          { word: "Billing SDKs", count: 18, sentiment: "neutral", quote: "The billing APIs are very powerful but they take a few days of engineering resources to coordinate correctly." },
+          { word: "Account Holds", count: 22, sentiment: "negative", quote: "They placed our payouts on hold for 5 days without any warning, causing cash-flow issues." },
+          { word: "Slow Support", count: 25, sentiment: "negative", quote: "We waited 48 hours for a reply to our high-priority support ticket during a checkout issue." }
+        ]
+      },
+      {
+        id: "adyen",
+        name: "Adyen",
+        domain: "adyen.com",
+        industry: "Fintech / Payments",
+        description: "Single payments platform integrating gateway, risk management, and acquiring directly connected to card schemes.",
+        strategy: "Focus on global enterprise scale, omnichannel unified commerce (POS + Online), and direct bank acquiring integration.",
+        positioning: { x: 92, y: 78 },
+        pricing: { free: "Requires contract", pro: "Interchange++ (variable)", enterprise: "Tiered volume discounts" },
+        features: { api: true, sso: true, analytics: true, mobile: false, support247: true },
+        metrics: { speed: 88, seo: 76, social: 60 },
+        sentiment: { positive: 74, neutral: 20, negative: 6 },
+        swot: {
+          strengths: ["Direct connection to global card networks bypassing middleware", "Omnichannel leader (integrates POS terminal and online platforms)", "Lower processing costs for extremely high-volume enterprises"],
+          weaknesses: ["High volume entry barrier; not suitable for small startups", "Integration is highly complex and requires dedicated engineers", "Limited ecosystem of third-party plugins"],
+          opportunities: ["Capturing mid-market businesses looking for omnichannel services", "Expansion of embedded financial services for SaaS platforms", "New regional licenses in emerging markets"],
+          threats: ["Stripe moving upmarket into enterprise contracts", "Decentralized finance networks reducing card processing margins", "Increasing strictness in international compliance"]
+        },
+        reviewKeywords: [
+          { word: "Omnichannel POS", count: 42, sentiment: "positive", quote: "The unified terminals let us manage offline retail transactions and web orders under one database." },
+          { word: "Direct Acquiring", count: 30, sentiment: "positive", quote: "We save thousands in gateway markup fees by routing directly to local bank acquiring nodes." },
+          { word: "High Barrier", count: 28, sentiment: "negative", quote: "Adyen rejected our application because they only accept merchants processing over $100k monthly." },
+          { word: "Complex Setup", count: 24, sentiment: "negative", quote: "Integrating custom token validation in our mobile checkout took weeks of back-and-forth debugging." },
+          { word: "Contract Negotiations", count: 15, sentiment: "neutral", quote: "Getting custom volume contracts finalized took several weeks of sales reviews." }
+        ]
+      },
+      {
+        id: "paddle",
+        name: "Paddle",
+        domain: "paddle.com",
+        industry: "Fintech / Payments",
+        description: "Merchant of Record (MoR) for software and SaaS companies, handling global sales tax, billing compliance, and fraud.",
+        strategy: "Developer compliance simplification, unified pricing/tax handling, and out-of-the-box merchant of record liability protection.",
+        positioning: { x: 65, y: 82 },
+        pricing: { free: "No monthly fee", pro: "5% + 50¢ per txn", enterprise: "Custom tier (> $1M ARR)" },
+        features: { api: true, sso: false, analytics: true, mobile: false, support247: false },
+        metrics: { speed: 82, seo: 80, social: 72 },
+        sentiment: { positive: 76, neutral: 16, negative: 8 },
+        swot: {
+          strengths: ["Acts as Merchant of Record (absorbs sales tax filing liabilities)", "Single dashboard for subscriptions, invoicing, and checkouts", "Friendly terms for early-stage bootstrapped SaaS companies"],
+          weaknesses: ["Significantly higher fee percentages (5% + 50¢) than pure gateways", "Customers are technically buying from Paddle, which restricts branding", "Limited custom subscription customization engines"],
+          opportunities: ["Providing embedded accounting and SaaS metrics natively", "Supporting localized alternative payment methods (APMs)", "Capturing non-tech digital content creators and online tools"],
+          threats: ["Stripe Tax and Stripe Billing lowering tax filing barriers", "Regulatory updates changing Merchant of Record compliance definitions", "New low-cost compliance aggregators"]
+        },
+        reviewKeywords: [
+          { word: "VAT Compliance", count: 50, sentiment: "positive", quote: "Paddle acts as the Merchant of Record, completely saving us from filing digital VAT sales taxes in 30 countries." },
+          { word: "Fast Subscriptions", count: 28, sentiment: "positive", quote: "Setting up monthly software billing tiers took less than half an hour using their pre-built overlays." },
+          { word: "High Commission", count: 35, sentiment: "negative", quote: "The 5% txn fee is extremely steep compared to pure gateways when processing high volumes." },
+          { word: "Checkout Branding", count: 14, sentiment: "neutral", quote: "Invoices show Paddle as the seller, which causes confusion for some of our non-tech clients." },
+          { word: "Merchant of Record", count: 19, sentiment: "neutral", quote: "Since they assume tax liability, they are highly strict about what products are approved for sale." }
+        ]
+      }
+    ];
+
+    const MOCK_NEWS = [
+      { competitor: "Stripe", time: "10 mins ago", text: "Stripe announced support for stablecoin settlements (USDC) starting today.", type: "feature" },
+      { competitor: "Adyen", time: "2 hours ago", text: "Adyen launched new ultra-slim Android POS terminals for retail stores.", type: "hardware" },
+      { competitor: "Paddle", time: "5 hours ago", text: "Paddle integrated support for Indian UPI and Brazilian Pix payment methods.", type: "payment" },
+      { competitor: "Stripe", time: "1 day ago", text: "Stripe raised processing limits for early-stage startup grants program.", type: "marketing" },
+      { competitor: "Adyen", time: "2 days ago", text: "Adyen secured a direct acquiring license in Mexico.", type: "license" }
+    ];
+
+    let alertRules = [
+      { id: "rule-speed", name: "Page Speed Outlier Warning (speed < 80%)", active: true, type: "speed" },
+      { id: "rule-seo", name: "SEO Rank Alert (score drops below 80%)", active: true, type: "seo" },
+      { id: "rule-pricing", name: "Competitor Pricing Strategy Shift (change detected)", active: true, type: "pricing" },
+      { id: "rule-negative", name: "Negative Review Sentiment Spike (> 12%)", active: false, type: "sentiment" }
+    ];
+
+    let alerts = [
+      { id: "log-1", severity: "INFO", time: "10 mins ago", title: "Monitoring Active Scopes", text: "Started real-time scraping listeners for competitor domains." },
+      { id: "log-2", severity: "WARNING", time: "2 hours ago", title: "Paddle SEO Rank Drop", text: "Paddle SEO score shifted from 82% to 80% due to missing page descriptions." },
+      { id: "log-3", severity: "HIGH", time: "5 hours ago", title: "Stripe Price Alert Triggered", text: "Stripe announced 2.9% + 30¢ flat tiers for checkout sub-widgets." },
+      { id: "log-4", severity: "INFO", time: "1 day ago", title: "Notion Workspace Synced", text: "Successfully synchronized 3 competitors stats columns to company Notion database." }
+    ];
+
+    const BOT_KEYWORDS = [
+      { kw: ["price", "pricing", "cost", "cheap", "expensive"], response: "Stripe charges 2.9% + 30¢, Paddle takes 5% + 50¢ (absorbing Sales Tax filings), and Adyen uses custom Interchange++ models which are cheaper for massive enterprises. To beat them on price, offering a flat subscription rather than transactional fees for low-ticket merchants is an excellent gap." },
+      { kw: ["weakness", "vulnerab", "flaw", "gap"], response: "Key weaknesses: Stripe struggles with sudden account freezes and support responsiveness for smaller merchants. Adyen is inaccessible for startups due to high minimum volume requirements. Paddle restricts direct branding because they act as the Merchant of Record. Capitalizing on prompt 24/7 personal customer support is a major differentiator." },
+      { kw: ["strength", "advantage", "benefit", "good"], response: "Stripe's developer ecosystem and API integration speed is unmatched. Adyen's omnichannel POS terminal + online card acquiring network is incredibly strong. Paddle's tax compliance coverage saves SaaS companies from global filing headaches. Any competitor must either equal Stripe's developer experience or offer unique services like tax localization." },
+      { kw: ["trend", "market", "future", "opportunity"], response: "Current market trends show high customer demand for alternative localized checkout methods (Pix, UPI, Klarna), real-time stablecoin payouts, and autonomous AI fraud prevention. Gaps exist in providing instant cross-border settlement for remote work contracts." }
+    ];
+
+    // Global Selected Competitor in Strategy tab
+    let selectedStrategyCompId = "stripe";
+
+    // Pointer Drag Tracking state
+    let isDraggingNode = false;
+    let draggedNodeId = null;
+
+    // Word Cloud selection state
+    let selectedWordCloudCompId = "stripe";
+    let selectedWordCloudKeyword = null;
+
+    // Initialize UI on load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Check stored theme
+      const cachedTheme = localStorage.getItem('html-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', cachedTheme);
+      updateThemeButtonUI(cachedTheme);
+
+      // Check stored competitors
+      const cachedComps = localStorage.getItem('html-competitors');
+      if (cachedComps) {
+        competitors = JSON.parse(cachedComps);
+      }
+
+      // Check stored alerts / rules
+      const cachedAlerts = localStorage.getItem('html-alerts');
+      if (cachedAlerts) {
+        alerts = JSON.parse(cachedAlerts);
+      }
+      const cachedRules = localStorage.getItem('html-alert-rules');
+      if (cachedRules) {
+        alertRules = JSON.parse(cachedRules);
+      }
+
+      // Initial renders
+      renderDashboard();
+      renderDatabaseList();
+      renderQuadrantMap();
+      renderComparisonTable();
+      renderPerformanceScorecard();
+      renderSentimentList();
+      renderSparklineList();
+      populateDropdowns();
+      loadSwot(competitors[0]?.id || 'stripe');
+      updateAlertsBadge();
+      initDragListeners();
+      
+      // Initialize Lucide icons
+      lucide.createIcons();
+    });
+
+    // Theme Switch
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('html-theme', next);
+      updateThemeButtonUI(next);
+    }
+
+    function updateThemeButtonUI(theme) {
+      const btn = document.getElementById('theme-toggle');
+      if (theme === 'dark') {
+        btn.innerHTML = `<i data-lucide="sun" style="width: 14px; height: 14px; color: var(--warning);"></i> <span>Light Mode</span>`;
+      } else {
+        btn.innerHTML = `<i data-lucide="moon" style="width: 14px; height: 14px; color: var(--primary);"></i> <span>Dark Mode</span>`;
+      }
+      lucide.createIcons();
+    }
+
+    // Tab Switch Logic
+    function switchTab(tabId, el) {
+      // Deactivate all nav items
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      // Activate clicked nav
+      el.classList.add('active');
+
+      // Hide all panels
+      document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
+      // Show active panel
+      document.getElementById(`view-${tabId}`).classList.add('active');
+
+      // Update titles
+      const pageTitle = document.getElementById('page-title-text');
+      const pageSubtitle = document.getElementById('page-subtitle-text');
+
+      switch (tabId) {
+        case 'dashboard':
+          pageTitle.innerText = "Executive Dashboard";
+          pageSubtitle.innerText = "Real-time market tracking and competitor status logs.";
+          renderDashboard();
+          break;
+        case 'database':
+          pageTitle.innerText = "Competitor Database";
+          pageSubtitle.innerText = "Manage active competitor URLs, domains, and scrapers.";
+          renderDatabaseList();
+          break;
+        case 'strategy':
+          pageTitle.innerText = "Strategy Mapping";
+          pageSubtitle.innerText = "2D Innovation vs Market Presence quadrant maps.";
+          renderQuadrantMap();
+          break;
+        case 'comparison':
+          pageTitle.innerText = "Side-by-Side Analysis";
+          pageSubtitle.innerText = "Inspect capabilities, features, and web vitals benchmark metrics.";
+          renderComparisonTable();
+          renderPerformanceScorecard();
+          break;
+        case 'trends':
+          pageTitle.innerText = "Trend Identification";
+          pageSubtitle.innerText = "Analyze review sentiments and emerging industry opportunity gaps.";
+          renderSentimentList();
+          renderSparklineList();
+          renderWordCloud();
+          break;
+        case 'ai-chat':
+          pageTitle.innerText = "AI Strategic Advisor";
+          pageSubtitle.innerText = "Generate Swot Analysis charts and ask target strategic questions.";
+          populateDropdowns();
+          break;
+        case 'alerts':
+          pageTitle.innerText = "Threat Alert Monitor";
+          pageSubtitle.innerText = "Monitor scraper rule logs and simulate competitor threat actions.";
+          renderAlertMonitor();
+          break;
+        case 'integrations':
+          pageTitle.innerText = "Integrations & Sync";
+          pageSubtitle.innerText = "Link Notion workspaces, Google sheets, and OpenAI API keys.";
+          break;
+      }
+      // Re-render icons
+      lucide.createIcons();
+    }
+
+    function triggerNav(tabId) {
+      const matchBtn = Array.from(document.querySelectorAll('.nav-item')).find(btn => 
+        btn.querySelector('span').innerText.toLowerCase().includes(tabId.substring(0,4))
+      );
+      if (matchBtn) switchTab(tabId, matchBtn);
+    }
+
+    // Save state helper
+    function saveCompetitors() {
+      localStorage.setItem('html-competitors', JSON.stringify(competitors));
+    }
+
+    // 1. DASHBOARD VIEW RENDERER
+    function renderDashboard() {
+      // Averages
+      const count = competitors.length;
+      const avgSeo = Math.round(competitors.reduce((acc, c) => acc + c.metrics.seo, 0) / (count || 1));
+      const avgSpeed = Math.round(competitors.reduce((acc, c) => acc + c.metrics.speed, 0) / (count || 1));
+
+      document.getElementById('stat-count').innerText = count;
+      document.getElementById('stat-seo').innerText = `${avgSeo}%`;
+      document.getElementById('stat-speed').innerText = `${avgSpeed}ms`;
+
+      // Profile cards
+      const container = document.getElementById('dashboard-profiles-list');
+      container.innerHTML = '';
+
+      competitors.forEach(comp => {
+        const card = document.createElement('div');
+        card.className = 'glass-card';
+        card.style.display = 'flex';
+        card.style.flexDirection = 'column';
+        card.style.justifyContent = 'space-between';
+        card.style.minHeight = '180px';
+        
+        card.innerHTML = `
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+              <h4 style="font-size: 1rem; font-weight: 600; margin: 0; color: var(--text-heading);">${comp.name}</h4>
+              <span class="badge badge-primary">${comp.industry}</span>
+            </div>
+            <a href="https://${comp.domain}" target="_blank" style="font-size: 0.75rem; color: var(--primary); text-decoration: none; margin-bottom: 0.75rem; display: inline-flex; align-items: center; gap: 0.25rem;">
+              ${comp.domain} <i data-lucide="arrow-up-right" style="width: 10px; height: 10px;"></i>
+            </a>
+            <p style="font-size: 0.8rem; color: var(--text-main); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+              ${comp.description}
+            </p>
+          </div>
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color);">
+            <div style="display: flex; gap: 0.75rem;">
+              <div style="display: flex; flex-direction: column;">
+                <span style="font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase;">Scale</span>
+                <span style="font-size: 0.75rem; font-weight: 600;">${comp.positioning.x}x / ${comp.positioning.y}y</span>
+              </div>
+              <div style="display: flex; flex-direction: column;">
+                <span style="font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase;">Positive</span>
+                <span style="font-size: 0.75rem; font-weight: 600; color: var(--success);">${comp.sentiment.positive}%</span>
+              </div>
+            </div>
+            <button class="btn btn-secondary" onclick="triggerNav('strategy'); selectedStrategyCompId='${comp.id}'; renderQuadrantMap();" style="padding: 0.3rem 0.5rem; font-size: 0.75rem; border-radius: 6px;">Inspect</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      // News list
+      const feed = document.getElementById('intel-feed');
+      feed.innerHTML = '';
+      MOCK_NEWS.forEach(news => {
+        const item = document.createElement('div');
+        item.style.padding = '0.65rem';
+        item.style.borderRadius = '8px';
+        item.style.borderLeft = `3px solid ${news.type === 'pricing' || news.type === 'license' ? 'var(--danger)' : 'var(--primary)'}`;
+        item.style.background = 'rgba(99, 102, 241, 0.02)';
+        item.innerHTML = `
+          <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.2rem;">
+            <span style="font-weight: 600; color: var(--text-heading);">${news.competitor}</span>
+            <span>${news.time}</span>
+          </div>
+          <p style="font-size: 0.75rem; color: var(--text-main); margin: 0;">${news.text}</p>
+        `;
+        feed.appendChild(item);
+      });
+      lucide.createIcons();
+    }
+
+    // 2. DATABASE VIEW RENDERER
+    function renderDatabaseList() {
+      const container = document.getElementById('db-list-container');
+      container.innerHTML = '';
+
+      competitors.forEach(comp => {
+        const item = document.createElement('div');
+        item.className = 'glass-card';
+        item.style.display = 'flex';
+        item.style.justifyContent = 'space-between';
+        item.style.alignItems = 'center';
+        item.style.padding = '1rem';
+
+        item.innerHTML = `
+          <div style="flex: 1;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+              <h4 style="font-size: 1rem; margin: 0; color: var(--text-heading);">${comp.name}</h4>
+              <span class="badge badge-primary" style="font-size: 0.65rem;">${comp.industry}</span>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+              <span><i data-lucide="globe" style="width: 10px; height: 10px; display: inline; vertical-align: middle;"></i> ${comp.domain}</span>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 0.75rem;">${comp.description}</p>
+            <div style="display: flex; gap: 0.75rem; font-size: 0.75rem;">
+              <span>SEO health: <strong>${comp.metrics.seo}%</strong></span>
+              <span>Speed: <strong>${comp.metrics.speed}ms</strong></span>
+              <span>Social Index: <strong>${comp.metrics.social}%</strong></span>
+            </div>
+          </div>
+          <button onclick="deleteCompetitor('${comp.id}')" class="btn btn-danger" style="padding: 0.45rem; border-radius: 8px; border: 1px solid var(--border-color); margin-left: 1rem;">
+            <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+          </button>
+        `;
+        container.appendChild(item);
+      });
+      lucide.createIcons();
+    }
+
+    function prefillForm(name, domain, industry, desc) {
+      document.getElementById('c-name').value = name;
+      document.getElementById('c-domain').value = domain;
+      document.getElementById('c-industry').value = industry;
+      document.getElementById('c-desc').value = desc;
+    }
+
+    function addCompetitor(e) {
+      e.preventDefault();
+      const name = document.getElementById('c-name').value;
+      const domain = document.getElementById('c-domain').value;
+      const industry = document.getElementById('c-industry').value;
+      const description = document.getElementById('c-desc').value;
+
+      if (!name || !domain) return;
+
+      const cleanId = name.toLowerCase().replace(/[^a-z0-9]/g, "-");
+      
+      // Random mock metrics
+      const x = Math.floor(Math.random() * 40) + 50;
+      const y = Math.floor(Math.random() * 40) + 50;
+      const speed = Math.floor(Math.random() * 20) + 75;
+      const seo = Math.floor(Math.random() * 20) + 75;
+      const social = Math.floor(Math.random() * 30) + 60;
+      const positive = Math.floor(Math.random() * 15) + 65;
+      const negative = Math.floor(Math.random() * 8) + 2;
+      const neutral = 100 - positive - negative;
+
+      const newComp = {
+        id: cleanId,
+        name,
+        domain,
+        industry,
+        description: description || `Scraped profiles for ${name} payment models.`,
+        strategy: "Developer compliance simplicity, digital growth strategies, and enterprise customization onboarding structures.",
+        positioning: { x, y },
+        pricing: { free: "14-day Free Trial", pro: "$49 / month", enterprise: "Custom quote tier" },
+        features: { api: Math.random() > 0.3, sso: Math.random() > 0.4, analytics: Math.random() > 0.2, mobile: Math.random() > 0.5, support247: Math.random() > 0.4 },
+        metrics: { speed, seo, social },
+        sentiment: { positive, neutral, negative },
+        swot: {
+          strengths: [`Excellent user setup speed`, `Modern dashboard API UI`, `Broad international support lines`],
+          weaknesses: [`High transaction billing costs`, `Limited customized features for enterprise`, `Occasional merchant holds`],
+          opportunities: [`Integrating new AI insights modules`, `Expanding to local payments`, `Forming direct reseller ties`],
+          threats: [`Pricing pressure from incumbents`, `Stricter regional licensing compliance`, `Sudden merchant churn`]
+        },
+        reviewKeywords: [
+          { word: "API Integration", count: Math.floor(Math.random() * 30) + 15, sentiment: "positive", quote: `Integrating ${name} took us less than a day, and their webhooks are very reliable.` },
+          { word: "Pricing Structure", count: Math.floor(Math.random() * 20) + 10, sentiment: "neutral", quote: "Pricing tiers are clear, but the custom enterprise quotes take some time to negotiate." },
+          { word: "Customer Support", count: Math.floor(Math.random() * 25) + 5, sentiment: "negative", quote: "Had some delay reaching support during our onboarding migration phase." }
+        ]
+      };
+
+      competitors.push(newComp);
+      saveCompetitors();
+
+      // Reset form
+      document.getElementById('competitor-form').reset();
+      
+      // Redirect to Dashboard
+      triggerNav('dashboard');
+    }
+
+    function deleteCompetitor(id) {
+      if (competitors.length <= 1) {
+        alert("At least one competitor profile must remain in the tracking system.");
+        return;
+      }
+      if (confirm("Confirm removal of this competitor database record?")) {
+        competitors = competitors.filter(c => c.id !== id);
+        saveCompetitors();
+        renderDatabaseList();
+      }
+    }
+
+    // 3. STRATEGY MAP RENDERER
+    function renderQuadrantMap() {
+      const container = document.getElementById('quadrant-nodes-container');
+      container.innerHTML = '';
+
+      competitors.forEach(comp => {
+        const isActive = comp.id === selectedStrategyCompId;
+        const btn = document.createElement('button');
+        
+        btn.innerText = comp.name.substring(0,2).toUpperCase();
+        btn.style.position = 'absolute';
+        btn.style.left = `calc(${comp.positioning.x}% - 16px)`;
+        btn.style.bottom = `calc(${comp.positioning.y}% - 16px)`;
+        btn.style.width = '32px';
+        btn.style.height = '32px';
+        btn.style.borderRadius = '50%';
+        btn.style.border = isActive ? '3px solid #fff' : '1px solid var(--border-color)';
+        btn.style.background = isActive ? 'linear-gradient(135deg, var(--primary), var(--accent))' : 'rgba(99, 102, 241, 0.25)';
+        btn.style.color = isActive ? '#fff' : 'var(--text-heading)';
+        btn.style.fontWeight = '700';
+        btn.style.fontSize = '0.7rem';
+        btn.style.cursor = 'pointer';
+        btn.style.boxShadow = isActive ? '0 0 15px var(--primary)' : 'var(--shadow-sm)';
+        btn.style.zIndex = isActive ? 10 : 2;
+
+        // Custom drag & drop handlers
+        btn.style.cursor = 'grab';
+        btn.onpointerdown = (e) => {
+          e.preventDefault();
+          isDraggingNode = true;
+          draggedNodeId = comp.id;
+          selectedStrategyCompId = comp.id;
+
+          // Select visually without recreating elements to preserve pointer capture
+          document.querySelectorAll('#quadrant-nodes-container button').forEach((b, idx) => {
+            const isSelf = competitors[idx].id === comp.id;
+            b.style.border = isSelf ? '3px solid #fff' : '1px solid var(--border-color)';
+            b.style.background = isSelf ? 'linear-gradient(135deg, var(--primary), var(--accent))' : 'rgba(99, 102, 241, 0.25)';
+            b.style.color = isSelf ? '#fff' : 'var(--text-heading)';
+            b.style.boxShadow = isSelf ? '0 0 15px var(--primary)' : 'var(--shadow-sm)';
+            b.style.zIndex = isSelf ? '10' : '2';
+          });
+
+          document.querySelectorAll('#strategy-comp-chips button').forEach((chipBtn, idx) => {
+            const isSelf = competitors[idx].id === comp.id;
+            chipBtn.style.background = isSelf ? 'var(--primary)' : 'var(--bg-card)';
+            chipBtn.style.color = isSelf ? '#fff' : 'var(--text-main)';
+          });
+
+          renderStrategyDetailsCard();
+        };
+
+        btn.onclick = () => selectStrategyComp(comp.id);
+        container.appendChild(btn);
+      });
+
+      // Render Chips
+      const chips = document.getElementById('strategy-comp-chips');
+      chips.innerHTML = '';
+      competitors.forEach(comp => {
+        const chip = document.createElement('button');
+        chip.innerText = comp.name;
+        chip.style.fontSize = '0.75rem';
+        chip.style.padding = '0.3rem 0.65rem';
+        chip.style.borderRadius = '6px';
+        chip.style.border = '1px solid var(--border-color)';
+        chip.style.background = comp.id === selectedStrategyCompId ? 'var(--primary)' : 'var(--bg-card)';
+        chip.style.color = comp.id === selectedStrategyCompId ? '#fff' : 'var(--text-main)';
+        chip.style.cursor = 'pointer';
+        chip.onclick = () => selectStrategyComp(comp.id);
+        chips.appendChild(chip);
+      });
+
+      renderStrategyDetailsCard();
+    }
+
+    function selectStrategyComp(id) {
+      selectedStrategyCompId = id;
+      renderQuadrantMap();
+    }
+
+    function renderStrategyDetailsCard() {
+      const card = document.getElementById('strategy-details-card');
+      const comp = competitors.find(c => c.id === selectedStrategyCompId) || competitors[0];
+      if (!comp) {
+        card.innerHTML = `<p style="font-size:0.85rem; color:var(--text-muted);">No competitors loaded.</p>`;
+        return;
+      }
+
+      card.innerHTML = `
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="font-size: 1.3rem; font-weight: 700; margin: 0; color:var(--text-heading);">${comp.name}</h3>
+            <span class="badge badge-primary">${comp.industry}</span>
+          </div>
+
+          <div style="background: var(--bg-base); padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 1.25rem;">
+            <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 0.2rem;">Value Proposition</span>
+            <p style="font-size: 0.8rem; color: var(--text-main); margin: 0;">${comp.description}</p>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+            <div style="display: flex; gap: 0.5rem; align-items: flex-start;">
+              <i data-lucide="target" style="width: 16px; height: 16px; color: var(--primary); margin-top: 0.1rem;"></i>
+              <div>
+                <h4 style="font-size: 0.85rem; font-weight: 600; margin: 0; color:var(--text-heading);">Strategic Approach</h4>
+                <p style="font-size: 0.75rem; color: var(--text-main); margin-top: 0.1rem;">${comp.strategy}</p>
+              </div>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: flex-start;">
+              <i data-lucide="award" style="width: 16px; height: 16px; color: var(--accent); margin-top: 0.1rem;"></i>
+              <div>
+                <h4 style="font-size: 0.85rem; font-weight: 600; margin: 0; color:var(--text-heading);">Quadrant Position</h4>
+                <p style="font-size: 0.75rem; color: var(--text-main); margin-top: 0.1rem;">
+                  Presence Index: <strong>${comp.positioning.x}</strong> | Innovation: <strong>${comp.positioning.y}</strong>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--border-color); padding-top: 1rem; margin-top: 1.25rem;">
+          <h4 style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem; color:var(--text-heading);">
+            <i data-lucide="dollar-sign" style="color: var(--success); width: 14px; height: 14px;"></i> Pricing Structure
+          </h4>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; text-align: center;">
+            <div style="background: var(--bg-base); padding: 0.5rem; border-radius: 6px; border: 1px solid var(--border-color);">
+              <span style="font-size: 0.6rem; color: var(--text-muted); display: block;">Entry</span>
+              <strong style="font-size: 0.75rem;">${comp.pricing.free}</strong>
+            </div>
+            <div style="background: var(--bg-base); padding: 0.5rem; border-radius: 6px; border: 1px solid var(--primary-light);">
+              <span style="font-size: 0.6rem; color: var(--primary); display: block;">Pro</span>
+              <strong style="font-size: 0.75rem; color: var(--primary);">${comp.pricing.pro}</strong>
+            </div>
+            <div style="background: var(--bg-base); padding: 0.5rem; border-radius: 6px; border: 1px solid var(--border-color);">
+              <span style="font-size: 0.6rem; color: var(--text-muted); display: block;">Enterprise</span>
+              <strong style="font-size: 0.75rem;">${comp.pricing.enterprise}</strong>
+            </div>
+          </div>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    // 4. COMPARISON MATRIX RENDERER
+    function renderComparisonTable() {
+      const table = document.getElementById('comparison-table');
+      table.innerHTML = '';
+
+      let headers = `
+        <thead>
+          <tr>
+            <th style="width: 28%">Feature Checklist</th>
+            ${competitors.map(c => `
+              <th style="text-align: center;">
+                <div style="color:var(--text-heading); font-weight:700;">${c.name}</div>
+                <div style="font-size:0.65rem; color:var(--text-muted); font-weight:400; text-transform:lowercase;">${c.domain}</div>
+              </th>
+            `).join('')}
+          </tr>
+        </thead>
+      `;
+
+      const checkSvg = `<span style="color: var(--success); display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--success-light); font-size:10px;">✔</span>`;
+      const crossSvg = `<span style="color: var(--danger); display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--danger-light); font-size:10px;">✘</span>`;
+
+      let body = `
+        <tbody>
+          <tr>
+            <td><strong>Sector Tag</strong></td>
+            ${competitors.map(c => `<td style="text-align: center;"><span class="badge badge-primary" style="font-size:0.65rem;">${c.industry}</span></td>`).join('')}
+          </tr>
+          <tr>
+            <td><strong>Pro Price Plan</strong></td>
+            ${competitors.map(c => `<td style="text-align: center; font-size:0.75rem; font-weight:600;">${c.pricing.pro}</td>`).join('')}
+          </tr>
+          <tr>
+            <td>Custom API Access</td>
+            ${competitors.map(c => `<td style="text-align: center;">${c.features.api ? checkSvg : crossSvg}</td>`).join('')}
+          </tr>
+          <tr>
+            <td>SSO Integrations</td>
+            ${competitors.map(c => `<td style="text-align: center;">${c.features.sso ? checkSvg : crossSvg}</td>`).join('')}
+          </tr>
+          <tr>
+            <td>Reports Analytics</td>
+            ${competitors.map(c => `<td style="text-align: center;">${c.features.analytics ? checkSvg : crossSvg}</td>`).join('')}
+          </tr>
+          <tr>
+            <td>Mobile App SDKs</td>
+            ${competitors.map(c => `<td style="text-align: center;">${c.features.mobile ? checkSvg : crossSvg}</td>`).join('')}
+          </tr>
+          <tr>
+            <td>24/7 Phone Support</td>
+            ${competitors.map(c => `<td style="text-align: center;">${c.features.support247 ? checkSvg : crossSvg}</td>`).join('')}
+          </tr>
+        </tbody>
+      `;
+
+      table.innerHTML = headers + body;
+    }
+
+    function renderPerformanceScorecard() {
+      const container = document.getElementById('performance-scorecard-list');
+      container.innerHTML = '';
+
+      competitors.forEach(comp => {
+        const item = document.createElement('div');
+        item.style.paddingBottom = '1rem';
+        item.style.borderBottom = '1px solid var(--border-color)';
+        
+        item.innerHTML = `
+          <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.4rem;">
+            <span style="font-weight: 600; color:var(--text-heading);">${comp.name} measurements</span>
+            <span style="color: var(--text-muted); font-size:0.75rem;">${comp.domain}</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 0.2rem;">
+                <span style="color:var(--text-muted)">Load Speed</span>
+                <strong>${comp.metrics.speed}%</strong>
+              </div>
+              <div style="height: 6px; background: var(--bg-base); border-radius: 3px; overflow: hidden;">
+                <div style="width: ${comp.metrics.speed}%; background: var(--success); height: 100%;"></div>
+              </div>
+            </div>
+
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 0.2rem;">
+                <span style="color:var(--text-muted)">SEO Strength</span>
+                <strong>${comp.metrics.seo}%</strong>
+              </div>
+              <div style="height: 6px; background: var(--bg-base); border-radius: 3px; overflow: hidden;">
+                <div style="width: ${comp.metrics.seo}%; background: var(--primary); height: 100%;"></div>
+              </div>
+            </div>
+
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 0.2rem;">
+                <span style="color:var(--text-muted)">Social Mentions</span>
+                <strong>${comp.metrics.social}%</strong>
+              </div>
+              <div style="height: 6px; background: var(--bg-base); border-radius: 3px; overflow: hidden;">
+                <div style="width: ${comp.metrics.social}%; background: var(--accent); height: 100%;"></div>
+              </div>
+            </div>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // 5. TRENDS VIEW RENDERER
+    function renderSentimentList() {
+      const container = document.getElementById('trends-sentiment-list');
+      container.innerHTML = '';
+
+      competitors.forEach(comp => {
+        const block = document.createElement('div');
+        block.innerHTML = `
+          <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem; color:var(--text-heading);">
+            <span>${comp.name} Forums</span>
+            <span style="color: var(--success)">${comp.sentiment.positive}% Positive</span>
+          </div>
+
+          <div style="display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: var(--bg-base);">
+            <div style="width: ${comp.sentiment.positive}%; background: var(--success); height: 100%;"></div>
+            <div style="width: ${comp.sentiment.neutral}%; background: #94a3b8; height: 100%;"></div>
+            <div style="width: ${comp.sentiment.negative}%; background: var(--danger); height: 100%;"></div>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; margin-top: 0.35rem; font-size: 0.65rem; color: var(--text-muted);">
+            <span><strong style="color: var(--success)">■</strong> Pos (${comp.sentiment.positive}%)</span>
+            <span><strong style="color: #94a3b8">■</strong> Neu (${comp.sentiment.neutral}%)</span>
+            <span><strong style="color: var(--danger)">■</strong> Neg (${comp.sentiment.negative}%)</span>
+          </div>
+        `;
+        container.appendChild(block);
+      });
+    }
+
+    function renderSparklineList() {
+      const container = document.getElementById('trends-sparkline-list');
+      container.innerHTML = '';
+
+      competitors.forEach((comp, idx) => {
+        const item = document.createElement('div');
+        item.style.display = 'flex';
+        item.style.alignItems = 'center';
+        item.style.justifyContent = 'space-between';
+        item.style.padding = '0.5rem';
+        item.style.borderRadius = '8px';
+        item.style.border = '1px solid var(--border-color)';
+        
+        let path = "M 0 15 Q 25 22 50 10 T 100 20";
+        let color = "var(--accent)";
+        let score = "+3%";
+        
+        if (comp.id === 'stripe') {
+          path = "M 0 18 Q 20 8 40 22 T 80 5 T 100 12";
+          color = "var(--primary)";
+          score = "+18%";
+        } else if (comp.id === 'adyen') {
+          path = "M 0 25 Q 30 18 60 12 T 100 5";
+          color = "var(--success)";
+          score = "+8%";
+        }
+
+        item.innerHTML = `
+          <div>
+            <h4 style="font-size: 0.85rem; margin: 0; color:var(--text-heading);">${comp.name} volume</h4>
+            <span style="font-size: 0.65rem; color: var(--text-muted);">Daily keyword tracking</span>
+          </div>
+
+          <div style="width: 100px; height: 26px;">
+            <svg viewBox="0 0 100 30" style="width: 100%; height: 100%;">
+              <path d="${path}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round"></path>
+            </svg>
+          </div>
+
+          <span style="font-size: 0.8rem; font-weight: 600; color: var(--success);">${score}</span>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // 6. AI SWOT RENDERER & CHAT
+    function populateDropdowns() {
+      const select = document.getElementById('swot-selector');
+      select.innerHTML = '';
+      competitors.forEach(comp => {
+        const opt = document.createElement('option');
+        opt.value = comp.id;
+        opt.innerText = comp.name;
+        select.appendChild(opt);
+      });
+    }
+
+    function loadSwot(compId) {
+      const comp = competitors.find(c => c.id === compId) || competitors[0];
+      const container = document.getElementById('swot-matrix-container');
+      if (!comp) return;
+
+      container.innerHTML = `
+        <div style="background: linear-gradient(135deg, var(--success-light) 0%, rgba(255,255,255,0) 100%); border: 1px solid var(--border-color); padding: 0.65rem; border-radius: 8px;">
+          <h4 style="font-size: 0.8rem; color: var(--success); font-weight: 700; margin-bottom: 0.35rem;">STRENGTHS</h4>
+          <ul style="font-size: 0.725rem; padding-left: 0.85rem; margin: 0; color: var(--text-main); display:flex; flex-direction:column; gap:0.25rem;">
+            ${comp.swot.strengths.map(s => `<li>${s}</li>`).join('')}
+          </ul>
+        </div>
+
+        <div style="background: linear-gradient(135deg, var(--danger-light) 0%, rgba(255,255,255,0) 100%); border: 1px solid var(--border-color); padding: 0.65rem; border-radius: 8px;">
+          <h4 style="font-size: 0.8rem; color: var(--danger); font-weight: 700; margin-bottom: 0.35rem;">WEAKNESSES</h4>
+          <ul style="font-size: 0.725rem; padding-left: 0.85rem; margin: 0; color: var(--text-main); display:flex; flex-direction:column; gap:0.25rem;">
+            ${comp.swot.weaknesses.map(w => `<li>${w}</li>`).join('')}
+          </ul>
+        </div>
+
+        <div style="background: linear-gradient(135deg, var(--accent-light) 0%, rgba(255,255,255,0) 100%); border: 1px solid var(--border-color); padding: 0.65rem; border-radius: 8px;">
+          <h4 style="font-size: 0.8rem; color: var(--accent); font-weight: 700; margin-bottom: 0.35rem;">OPPORTUNITIES</h4>
+          <ul style="font-size: 0.725rem; padding-left: 0.85rem; margin: 0; color: var(--text-main); display:flex; flex-direction:column; gap:0.25rem;">
+            ${comp.swot.opportunities.map(o => `<li>${o}</li>`).join('')}
+          </ul>
+        </div>
+
+        <div style="background: linear-gradient(135deg, var(--warning-light) 0%, rgba(255,255,255,0) 100%); border: 1px solid var(--border-color); padding: 0.65rem; border-radius: 8px;">
+          <h4 style="font-size: 0.8rem; color: var(--warning); font-weight: 700; margin-bottom: 0.35rem;">THREATS</h4>
+          <ul style="font-size: 0.725rem; padding-left: 0.85rem; margin: 0; color: var(--text-main); display:flex; flex-direction:column; gap:0.25rem;">
+            ${comp.swot.threats.map(t => `<li>${t}</li>`).join('')}
+          </ul>
+        </div>
+      `;
+    }
+
+    function handleChatSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('chat-input');
+      const text = input.value;
+      if (!text.trim()) return;
+
+      sendChatMessage(text);
+      input.value = '';
+    }
+
+    function sendChatMessage(text) {
+      const history = document.getElementById('chat-history');
+      
+      // Append user bubble
+      const userBubble = document.createElement('div');
+      userBubble.style.alignSelf = 'flex-end';
+      userBubble.style.maxWidth = '85%';
+      userBubble.style.background = 'var(--primary)';
+      userBubble.style.color = '#fff';
+      userBubble.style.padding = '0.6rem 0.85rem';
+      userBubble.style.borderRadius = '12px';
+      userBubble.style.borderTopRightRadius = '2px';
+      userBubble.style.fontSize = '0.8rem';
+      userBubble.style.lineHeight = '1.4';
+      userBubble.innerText = text;
+      history.appendChild(userBubble);
+      history.scrollTop = history.scrollHeight;
+
+      // Typing feedback
+      const typing = document.createElement('div');
+      typing.id = 'bot-typing-node';
+      typing.style.alignSelf = 'flex-start';
+      typing.style.background = 'var(--bg-card)';
+      typing.style.border = '1px solid var(--border-color)';
+      typing.style.padding = '0.6rem 0.85rem';
+      typing.style.borderRadius = '12px';
+      typing.style.borderTopLeftRadius = '2px';
+      typing.style.fontSize = '0.75rem';
+      typing.style.color = 'var(--text-muted)';
+      typing.style.fontStyle = 'italic';
+      typing.innerText = "Analyzing scraper databases...";
+      history.appendChild(typing);
+      history.scrollTop = history.scrollHeight;
+
+      // Simulated Response
+      setTimeout(() => {
+        // Remove typing node
+        const typingNode = document.getElementById('bot-typing-node');
+        if (typingNode) typingNode.remove();
+
+        const clean = text.toLowerCase();
+        let reply = "That is a great query. Scrape details suggest that they are scaling core API infrastructures. Capitalizing on their weaker developer support channels is an effective market entry gap.";
+        
+        for (const item of BOT_KEYWORDS) {
+          if (item.kw.some(k => clean.includes(k))) {
+            reply = item.response;
+            break;
+          }
+        }
+
+        const botBubble = document.createElement('div');
+        botBubble.style.alignSelf = 'flex-start';
+        botBubble.style.maxWidth = '85%';
+        botBubble.style.background = 'var(--bg-card)';
+        botBubble.style.border = '1px solid var(--border-color)';
+        botBubble.style.padding = '0.6rem 0.85rem';
+        botBubble.style.borderRadius = '12px';
+        botBubble.style.borderTopLeftRadius = '2px';
+        botBubble.style.fontSize = '0.8rem';
+        botBubble.style.lineHeight = '1.4';
+        botBubble.innerText = reply;
+
+        history.appendChild(botBubble);
+        history.scrollTop = history.scrollHeight;
+      }, 700);
+    }
+
+    // 7. INTEGRATIONS VIEWS (SYNC LOOPS)
+    function triggerSync(type) {
+      const logs = document.getElementById(`${type}-sync-logs`);
+      const status = document.getElementById(`${type}-sync-status`);
+      const btn = document.getElementById(`${type}-sync-btn`);
+      
+      logs.style.display = 'flex';
+      logs.innerHTML = '';
+      status.innerText = "Connecting API...";
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="refresh-cw" class="animate-spin" style="width: 12px; height: 12px;"></i> Syncing...`;
+      
+      const logItems = type === 'sheet' 
+        ? ["[System] Initializing Google OAuth connection...", "[Data] Mapping competitor metrics rows...", "[Success] Sheets updated: 3 rows written successfully."]
+        : ["[Notion] Authenticating database token ID...", "[Notion] Inserting competitor table sub-elements...", "[Success] Notion pages updated successfully."];
+
+      logItems.forEach((text, index) => {
+        setTimeout(() => {
+          const entry = document.createElement('div');
+          entry.innerText = text;
+          if (text.startsWith('[Success]')) {
+            entry.style.color = 'var(--success)';
+            status.innerHTML = `<span style="color:var(--success); font-weight:600;">✔ Synced</span>`;
+            btn.disabled = false;
+            btn.innerHTML = `<i data-lucide="refresh-cw" style="width: 12px; height: 12px;"></i> Sync Again`;
+            lucide.createIcons();
+          }
+          logs.appendChild(entry);
+          logs.scrollTop = logs.scrollHeight;
+        }, (index + 1) * 600);
+      });
+    }
+
+    function updateGptStatus(val) {
+      const text = document.getElementById('gpt-status-text');
+      if (val.trim()) {
+        text.innerHTML = `Status: <strong style="color:var(--success)">Live OpenAI API connection active</strong>`;
+      } else {
+        text.innerHTML = `Status: <strong>Simulated AI active - ready to run</strong>`;
+      }
+    }
+
+    // --- Interactive Features Integrations ---
+
+    function initDragListeners() {
+      const map = document.getElementById('quadrant-map');
+      if (!map) return;
+
+      window.addEventListener('pointermove', (e) => {
+        if (!isDraggingNode || !draggedNodeId) return;
+
+        const rect = map.getBoundingClientRect();
+        let x = Math.round(((e.clientX - rect.left) / rect.width) * 100);
+        let y = Math.round((1 - (e.clientY - rect.top) / rect.height) * 100);
+
+        x = Math.min(95, Math.max(5, x));
+        y = Math.min(95, Math.max(5, y));
+
+        const comp = competitors.find(c => c.id === draggedNodeId);
+        if (comp) {
+          comp.positioning.x = x;
+          comp.positioning.y = y;
+
+          // Dynamically adjust the position of the bubble in DOM
+          const compIndex = competitors.findIndex(c => c.id === draggedNodeId);
+          const nodes = document.getElementById('quadrant-nodes-container').children;
+          if (compIndex !== -1 && nodes[compIndex]) {
+            const btn = nodes[compIndex];
+            btn.style.left = `calc(${x}% - 16px)`;
+            btn.style.bottom = `calc(${y}% - 16px)`;
+            btn.style.cursor = 'grabbing';
+            btn.title = `${comp.name} (${x}x, ${y}y)`;
+          }
+
+          if (draggedNodeId === selectedStrategyCompId) {
+            renderStrategyDetailsCard();
+          }
+        }
+      });
+
+      window.addEventListener('pointerup', () => {
+        if (isDraggingNode) {
+          isDraggingNode = false;
+          draggedNodeId = null;
+          saveCompetitors();
+          renderQuadrantMap();
+        }
+      });
+    }
+
+    function getKeywordColor(sentiment) {
+      switch (sentiment) {
+        case 'positive': return 'var(--success)';
+        case 'negative': return 'var(--danger)';
+        default: return 'var(--text-main)';
+      }
+    }
+
+    function getKeywordBg(sentiment) {
+      switch (sentiment) {
+        case 'positive': return 'var(--success-light)';
+        case 'negative': return 'var(--danger-light)';
+        default: return 'var(--border-color)';
+      }
+    }
+
+    function renderWordCloud() {
+      const selector = document.getElementById('wordcloud-comp-selector');
+      if (selector) {
+        const previousVal = selector.value || selectedWordCloudCompId;
+        selector.innerHTML = competitors.map(c => `<option value="${c.id}" ${c.id === previousVal ? 'selected' : ''}>${c.name} Reviews</option>`).join('');
+      }
+
+      const activeComp = competitors.find(c => c.id === selectedWordCloudCompId) || competitors[0];
+      const container = document.getElementById('word-cloud-container');
+      if (!container) return;
+
+      container.innerHTML = '';
+      if (!activeComp || !activeComp.reviewKeywords || activeComp.reviewKeywords.length === 0) {
+        container.innerHTML = `<p style="font-size:0.85rem; color:var(--text-muted);">No reviews loaded for this competitor.</p>`;
+        document.getElementById('word-cloud-quote-overlay').style.display = 'none';
+        return;
+      }
+
+      activeComp.reviewKeywords.forEach((kw, idx) => {
+        const isSelected = selectedWordCloudKeyword && selectedWordCloudKeyword.word === kw.word;
+        const fontSize = `${0.8 + (kw.count / 80) * 0.5}rem`;
+
+        const btn = document.createElement('button');
+        btn.innerText = `${kw.word} (${kw.count})`;
+        btn.style.fontSize = fontSize;
+        btn.style.background = isSelected ? getKeywordColor(kw.sentiment) : getKeywordBg(kw.sentiment);
+        btn.style.color = isSelected ? 'white' : getKeywordColor(kw.sentiment);
+        btn.style.border = isSelected ? '1px solid transparent' : `1px solid ${getKeywordColor(kw.sentiment)}`;
+        btn.style.padding = '0.35rem 0.75rem';
+        btn.style.borderRadius = '20px';
+        btn.style.cursor = 'pointer';
+        btn.style.fontWeight = '600';
+        btn.style.transition = 'all 0.2s ease';
+        btn.style.boxShadow = isSelected ? `0 4px 10px rgba(99, 102, 241, 0.2)` : 'none';
+        btn.style.transform = isSelected ? 'scale(1.08)' : 'scale(1)';
+        btn.style.userSelect = 'none';
+
+        btn.onmouseover = () => {
+          if (!isSelected) {
+            btn.style.transform = 'scale(1.05)';
+            btn.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.05)';
+          }
+        };
+        btn.onmouseout = () => {
+          if (!isSelected) {
+            btn.style.transform = 'scale(1)';
+            btn.style.boxShadow = 'none';
+          }
+        };
+        btn.onclick = () => selectWordCloudKeyword(idx);
+        container.appendChild(btn);
+      });
+
+      const overlay = document.getElementById('word-cloud-quote-overlay');
+      if (overlay) {
+        if (selectedWordCloudKeyword) {
+          overlay.style.display = 'block';
+          overlay.style.borderLeft = `4px solid ${getKeywordColor(selectedWordCloudKeyword.sentiment)}`;
+          overlay.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+              <span style="display: flex; align-items: center; gap: 0.25rem;">
+                <i data-lucide="quote" style="width: 12px; height: 12px; color: ${getKeywordColor(selectedWordCloudKeyword.sentiment)};"></i>
+                Review focus: <strong>${selectedWordCloudKeyword.word}</strong>
+              </span>
+              <span>Scraped Frequency: <strong>${selectedWordCloudKeyword.count} mentions</strong></span>
+            </div>
+            <p style="font-style: italic; font-size: 0.9rem; color: var(--text-heading); margin: 0; line-height: 1.5;">
+              "${selectedWordCloudKeyword.quote}"
+            </p>
+          `;
+          lucide.createIcons();
+        } else {
+          overlay.style.display = 'none';
+        }
+      }
+    }
+
+    function changeWordCloudComp(val) {
+      selectedWordCloudCompId = val;
+      selectedWordCloudKeyword = null;
+      renderWordCloud();
+    }
+
+    function selectWordCloudKeyword(idx) {
+      const comp = competitors.find(c => c.id === selectedWordCloudCompId) || competitors[0];
+      if (comp && comp.reviewKeywords && comp.reviewKeywords[idx]) {
+        selectedWordCloudKeyword = comp.reviewKeywords[idx];
+      } else {
+        selectedWordCloudKeyword = null;
+      }
+      renderWordCloud();
+    }
+
+    function renderAlertMonitor() {
+      // Stats counts
+      const activeIncidents = alerts.filter(a => a.severity === 'HIGH' || a.severity === 'WARNING').length;
+      const activeRules = alertRules.filter(r => r.active).length;
+
+      const incidentCountEl = document.getElementById('high-severity-alerts-count');
+      const rulesCountEl = document.getElementById('active-scraper-rules-count');
+      if (incidentCountEl) incidentCountEl.innerText = activeIncidents;
+      if (rulesCountEl) rulesCountEl.innerText = `${activeRules} / ${alertRules.length}`;
+
+      // Rules Configurator list
+      const rulesContainer = document.getElementById('scraper-rules-container');
+      if (rulesContainer) {
+        rulesContainer.innerHTML = alertRules.map(rule => `
+          <label style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: var(--text-main); cursor: pointer; padding: 0.5rem; border-radius: 6px; transition: 0.2s;">
+            <input
+              type="checkbox"
+              ${rule.active ? 'checked' : ''}
+              onchange="toggleAlertRule('${rule.id}')"
+              style="width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer;"
+            />
+            <span>${rule.name}</span>
+          </label>
+        `).join('');
+      }
+
+      // Simulator Target Competitor select prefill
+      const compSelect = document.getElementById('simulator-comp-select');
+      if (compSelect) {
+        const previousVal = compSelect.value;
+        compSelect.innerHTML = competitors.map(c => `
+          <option value="${c.id}" ${c.id === previousVal ? 'selected' : ''}>${c.name} (${c.domain})</option>
+        `).join('');
+      }
+
+      // Live Logs container
+      const feedContainer = document.getElementById('threat-feed-container');
+      if (feedContainer) {
+        if (alerts.length === 0) {
+          feedContainer.innerHTML = `
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; color: var(--text-muted); gap: 0.5rem; height: 250px;">
+              <i data-lucide="bell" style="opacity: 0.3; width: 32px; height: 32px;"></i>
+              <span style="font-size: 0.85rem;">No threat events triggered. Log feed is empty.</span>
+            </div>
+          `;
+        } else {
+          feedContainer.innerHTML = alerts.map(alert => {
+            let severityBadgeClass = '';
+            let severityIconHtml = '';
+            if (alert.severity === 'HIGH') {
+              severityBadgeClass = 'badge-danger';
+              severityIconHtml = `<i data-lucide="alert-circle" style="width: 16px; height: 16px; color: var(--danger);"></i>`;
+            } else if (alert.severity === 'WARNING') {
+              severityBadgeClass = 'badge-warning';
+              severityIconHtml = `<i data-lucide="alert-triangle" style="width: 16px; height: 16px; color: var(--warning);"></i>`;
+            } else {
+              severityBadgeClass = 'badge-primary';
+              severityIconHtml = `<i data-lucide="info" style="width: 16px; height: 16px; color: var(--primary);"></i>`;
+            }
+
+            return `
+              <div style="
+                padding: 1rem;
+                border-radius: 12px;
+                border: 1px solid var(--border-color);
+                border-left: 5px solid ${alert.severity === 'HIGH' ? 'var(--danger)' : alert.severity === 'WARNING' ? 'var(--warning)' : 'var(--primary)'};
+                background: ${alert.severity === 'HIGH' ? 'rgba(239, 68, 68, 0.02)' : alert.severity === 'WARNING' ? 'rgba(245, 158, 11, 0.02)' : 'rgba(99, 102, 241, 0.02)'};
+                animation: fadeIn 0.3s ease-out;
+              ">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    ${severityIconHtml}
+                    <strong style="font-size: 0.9rem; color: var(--text-heading);">${alert.title}</strong>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span class="badge ${severityBadgeClass}" style="font-size: 0.6rem; padding: 0.1rem 0.4rem;">
+                      ${alert.severity}
+                    </span>
+                    <span style="font-size: 0.7rem; color: var(--text-muted);">${alert.time}</span>
+                  </div>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-main); margin: 0; line-height: 1.4;">
+                  ${alert.text}
+                </p>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+      lucide.createIcons();
+    }
+
+    function toggleAlertRule(ruleId) {
+      const rule = alertRules.find(r => r.id === ruleId);
+      if (rule) {
+        rule.active = !rule.active;
+        localStorage.setItem('html-alert-rules', JSON.stringify(alertRules));
+        renderAlertMonitor();
+      }
+    }
+
+    function clearAlerts() {
+      alerts = [];
+      localStorage.setItem('html-alerts', JSON.stringify(alerts));
+      renderAlertMonitor();
+      updateAlertsBadge();
+    }
+
+    function fireSimulatedThreat() {
+      const targetComp = document.getElementById('simulator-comp-select').value;
+      const threatType = document.getElementById('simulator-scenario-select').value;
+      const compObj = competitors.find(c => c.id === targetComp);
+      const compName = compObj ? compObj.name : 'Competitor';
+
+      let title = '';
+      let text = '';
+      let severity = 'INFO';
+
+      if (threatType === 'pricing') {
+        title = `${compName} Pricing Revision`;
+        text = `${compName} updated their Pro Tier transaction rates from ${compObj?.pricing?.pro || 'variable'} to a custom subscription model.`;
+        severity = 'HIGH';
+      } else if (threatType === 'downtime') {
+        title = `${compName} Service Downtime`;
+        text = `Scraper sensors detected a 404 response on ${compObj?.domain || 'competitor.com'} checkout API sub-routes. Latency spike: +1,200ms.`;
+        severity = 'HIGH';
+      } else if (threatType === 'seo') {
+        title = `${compName} SEO Score Alert`;
+        text = `Daily crawler detected a drop in organic keywords rank for ${compObj?.domain || 'competitor.com'}. SEO index now at ${Math.max(50, (compObj?.metrics?.seo || 80) - 8)}%.`;
+        severity = 'WARNING';
+      } else {
+        title = `${compName} DNS Update`;
+        text = `Competitor refreshed active SPF/DKIM authentication records for email marketing outreach domains.`;
+        severity = 'INFO';
+      }
+
+      const newAlert = {
+        id: 'log-' + Date.now(),
+        severity,
+        time: 'Just now',
+        title,
+        text
+      };
+
+      alerts.unshift(newAlert);
+      localStorage.setItem('html-alerts', JSON.stringify(alerts));
+      renderAlertMonitor();
+      updateAlertsBadge();
+    }
+
+    function updateAlertsBadge() {
+      const count = alerts.filter(a => a.severity === 'HIGH' || a.severity === 'WARNING').length;
+      const badge = document.getElementById('alerts-badge');
+      if (badge) {
+        if (count > 0) {
+          badge.innerText = count;
+          badge.style.display = 'block';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+    }
+  </script>
+</body>
+</html>
